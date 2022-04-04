@@ -161,7 +161,7 @@ class TransaksiController extends Controller
         $data = DB::table('transaksi')  ->join('member', 'transaksi.id_member', '=', 'member.id_member')
                                         ->join('users', 'transaksi.id', '=', 'users.id')
                                         ->select('transaksi.id_transaksi', 'member.nama_member' , 'transaksi.tanggal','transaksi.tanggal_bayar','transaksi.total_bayar', 'users.name' )
-                                        //->where('users.id_outlet', $data_user->id_outlet)
+                                        ->where('users.id_outlet', $data_user->id_outlet)
                                         ->whereYear('transaksi.tanggal', '=' , $tahun)
                                         ->whereMonth('transaksi.tanggal', '=', $bulan)
                                         ->get();

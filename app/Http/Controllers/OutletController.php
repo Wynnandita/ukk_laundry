@@ -31,10 +31,11 @@ class OutletController extends Controller
         $outlet->save();
 
         $data = Outlet::where('id_outlet', '=', $outlet->id)->first();
-        return response()->json([
-            'message' => 'Data outlet berhasil ditambahkan',
+        return Response()->json([
+            'success' => true,
+            'message' => 'Data member berhasil ditambahkan',
             'data' => $data
-        ]);
+          ]);
     }
 
     public function getAll($limit = NULL, $offset = NULL)
@@ -73,7 +74,7 @@ class OutletController extends Controller
 
     return response()->json([
         'success' => true,
-        'message' => "Data outlet berhasil diubah"
+        'message' => 'Data user berhasil diubah'
     ]);
   }
 

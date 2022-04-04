@@ -23,11 +23,11 @@ class UserController extends Controller
     public function store(Request $request)
   {
     $validator = Validator::make($request->all(),[
-      'name'  => 'required|string',
-      'username'       =>'required|string',
-      'password'=>'required|string|min:6',
-      'role'=>'required|string',
-      'id_outlet' => 'required'
+      'name'     => 'required|string',
+      'username' => 'required|string',
+      'password' => 'required|string',
+      'role'     => 'required|string',
+      'id_outlet'=> 'required'
     ]);
 
     if ($validator->fails()) {
@@ -35,18 +35,17 @@ class UserController extends Controller
     }
 
     $user = new User();
-		$user->name 	= $request->name;
-		$user->username = $request->username;
-		$user->password = Hash::make($request->password);
-		$user->role 	= $request->role;
-		$user->id_outlet = $request->id_outlet;
-
-		$user->save();
+    $user -> name 	  = $request -> name;
+	  $user -> username = $request -> username;
+	  $user -> password = Hash::make($request->password);
+	  $user -> role 	  = $request -> role;
+    $user->id_outlet  = $request->id_outlet;
 
     $user->save();
     $data = User::where('id', '=', $user->id)->first();
 
     return Response()->json([
+      'success' => true,
       'message' => 'Data user berhasil ditambahkan',
       'data' => $data
     ]);
@@ -54,6 +53,7 @@ class UserController extends Controller
 
   public function getAll()
   {
+
     $data = DB::table('users')->join('outlet', 'users.id_outlet', '=', 'outlet.id_outlet')
     ->select('users.*', 'outlet.nama_outlet')
     ->get();
@@ -62,40 +62,38 @@ return response()->json($data);
   }
 
   public function getById($id)
-  {
-    $data = DB::table('users')->join('outlet', 'users.id_outlet', '=', 'outlet.id_outlet')
-                              ->select('users.*', 'outlet.nama_outlet')
-                              ->get();
+	{
+		$user = User::where('id', '=', $id)->first();
 
-      return response()->json(['data' => $data]);
-  }
+		return response()->json($user);
+	}
 
   public function update(Request $request, $id)
-	{
-		$validator = Validator::make($request->all(), [
-			'role' => 'required',
-			'name' => 'required',
-			'id_outlet' => 'required'
-		]);
-		
-		$user = User::where('id', '=', $id)->first();
-		
-		$user->name = $request->name;
-		$user->username = $request->username;
-		$user->role = $request->role;
-		$user->id_outlet = $request->id_outlet;
+  {
+    $validator = Validator::make($request->all(),[
+		'name'      => 'required',
+		'username'  => 'required',
+		'password'  => 'required',
+		'role'      => 'required',
+    'id_outlet' => 'required'
+    ]);
+
+    $user = User::where('id', '=', $id)->first();
+
+	  $user -> name      = $request -> name;
+		$user -> username  = $request -> username;
+		$user -> role      = $request -> role;
+		$user -> id_outlet = $request -> id_outlet;
 		if($request->password != null) {
-			$user->password = Hash::make($request->password);
+		$user -> password  = Hash::make($request->password);
 		}
+    $user->save();
 
-		$user->save();
+    return Response()->json([
+      'success' => true,
+      'message' => 'Data user berhasil diubah',]);
+  }
 
-		return response()->json([
-			'success' => true,
-			'message' => 'Data user berhasil diubah'
-		]);
-
-	}
   public function delete($id)
   {
       $delete = User::where('id', '=', $id)->delete();
